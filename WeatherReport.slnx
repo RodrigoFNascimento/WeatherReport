@@ -1,1 +1,7 @@
-<Solution />
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WebAPI/WebAPI.csproj" />
+    <Project Path="WeatherReport.AppHost/WeatherReport.AppHost.csproj" Id="c7c1a767-70df-49f5-84ba-b8bc44830822" />
+    <Project Path="WeatherReport.ServiceDefaults/WeatherReport.ServiceDefaults.csproj" />
+  </Folder>
+</Solution>
