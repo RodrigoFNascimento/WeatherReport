@@ -4,6 +4,11 @@ namespace WebAPI.Endpoints;
 
 internal static class WeatherEndpoints
 {
+    /// <summary>
+    /// Adds endpoints to return the weather forecast.
+    /// </summary>
+    /// <param name="endpoints">The <see cref="IVersionedEndpointRouteBuilder"/> the endpoints will be added to.</param>
+    /// <returns>The configured <see cref="IVersionedEndpointRouteBuilder"/> for further customization.</returns>
     public static IVersionedEndpointRouteBuilder MapWeatherEndpoints(this IVersionedEndpointRouteBuilder endpoints)
     {
         var group = endpoints
@@ -28,6 +33,8 @@ internal static class WeatherEndpoints
             return forecast;
         })
         .WithName("GetWeatherForecast")
+        .WithSummary("Gets the weather forecast.")
+        .WithDescription("Gets the weather forecast.")
         .MapToApiVersion(1);
 
         return endpoints;
