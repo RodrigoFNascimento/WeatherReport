@@ -4,7 +4,7 @@ namespace WebAPI.Endpoints;
 
 internal static class WeatherEndpoints
 {
-    public static IEndpointRouteBuilder MapWeatherEndpoints(this IVersionedEndpointRouteBuilder endpoints)
+    public static IVersionedEndpointRouteBuilder MapWeatherEndpoints(this IVersionedEndpointRouteBuilder endpoints)
     {
         var group = endpoints
             .MapGroup("v{version:apiVersion}/weatherforecast")
