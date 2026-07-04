@@ -7,11 +7,11 @@ internal static class WeatherEndpoints
     /// <summary>
     /// Adds endpoints to return the weather forecast.
     /// </summary>
-    /// <param name="endpoints">The <see cref="IVersionedEndpointRouteBuilder"/> the endpoints will be added to.</param>
+    /// <param name="builder">The <see cref="IVersionedEndpointRouteBuilder"/> the endpoints will be added to.</param>
     /// <returns>The configured <see cref="IVersionedEndpointRouteBuilder"/> for further customization.</returns>
-    public static IVersionedEndpointRouteBuilder MapWeatherEndpoints(this IVersionedEndpointRouteBuilder endpoints)
+    public static IVersionedEndpointRouteBuilder MapWeatherEndpoints(this IVersionedEndpointRouteBuilder builder)
     {
-        var group = endpoints
+        var group = builder
             .MapGroup("v{version:apiVersion}/weatherforecast")
             .HasApiVersion(1);
 
@@ -37,7 +37,7 @@ internal static class WeatherEndpoints
         .WithDescription("Gets the weather forecast.")
         .MapToApiVersion(1);
 
-        return endpoints;
+        return builder;
     }
 }
 
