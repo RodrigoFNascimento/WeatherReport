@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 
 app.UseHttpsRedirection();
 
-app.MapWeatherEndpoints();
+app.MapWeatherEndpoints()
+    .MapConnectivityEndpoints();
 
 app.Run();
