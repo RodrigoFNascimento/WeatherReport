@@ -11,7 +11,15 @@ internal static partial class Program
     /// <param name="services">The instance of <see cref="IServiceCollection"/> to be configured.</param>
     /// <returns>The configured instance of <see cref="IServiceCollection"/> for further configuration.</returns>
     public static IServiceCollection AddWebApi(this IServiceCollection services) =>
-        services.AddDocumentation();
+        services
+        .AddDocumentation()
+        .AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = context =>
+            {
+                context.ProblemDetails.Extensions.Remove("exception");
+            };
+        });
 
     private static IServiceCollection AddDocumentation(
         this IServiceCollection services)
