@@ -1,15 +1,21 @@
-﻿namespace WebAPI.Endpoints;
+﻿using Asp.Versioning.Builder;
+
+namespace WebAPI.Endpoints;
 
 internal static class WeatherEndpoints
 {
-    public static IEndpointRouteBuilder MapWeatherEndpoints(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapWeatherEndpoints(this IVersionedEndpointRouteBuilder endpoints)
     {
+        var group = endpoints
+            .MapGroup("v{version:apiVersion}/weatherforecast")
+            .HasApiVersion(1);
+
         var summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        endpoints.MapGet("/weatherforecast", () =>
+        group.MapGet("", () =>
         {
             var forecast = Enumerable.Range(1, 5).Select(index =>
                 new WeatherForecast
@@ -21,7 +27,8 @@ internal static class WeatherEndpoints
                 .ToArray();
             return forecast;
         })
-        .WithName("GetWeatherForecast");
+        .WithName("GetWeatherForecast")
+        .MapToApiVersion(1);
 
         return endpoints;
     }

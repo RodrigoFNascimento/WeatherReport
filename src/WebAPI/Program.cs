@@ -1,17 +1,23 @@
 using WeatherReport.ServiceDefaults;
+using WebAPI;
 using WebAPI.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddWebApi();
 
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
+
+app.UseHttpsRedirection();
+
+app.MapConnectivityEndpoints()
+    .NewVersionedApi()
+    .ReportApiVersions()
+    .MapWeatherEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
@@ -20,13 +26,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+        foreach (var groupName in app.DescribeApiVersions()
+            .Select(description => description.GroupName))
+        {
+            options.SwaggerEndpoint(
+                $"/openapi/{groupName}.json",
+                groupName);
+        }
     });
 }
-
-app.UseHttpsRedirection();
-
-app.MapWeatherEndpoints()
-    .MapConnectivityEndpoints();
 
 app.Run();
