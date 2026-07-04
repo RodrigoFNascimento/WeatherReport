@@ -26,7 +26,7 @@ internal static partial class Program
                     {
                         Title = "Weather report API",
                         Description = "This is meant to be a study on how to build web APIs.",
-                        Version = "v1"
+                        Version = "1.0.0"
                     };
 
                     return Task.CompletedTask;
