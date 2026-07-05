@@ -1,3 +1,4 @@
+using Infrastructure;
 using WeatherReport.ServiceDefaults;
 using WebAPI;
 using WebAPI.Endpoints;
@@ -6,13 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddWebApi();
+builder.Services
+    .AddInfrastructure(builder, builder.Configuration)
+    .AddWebApi();
 
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
 app.UseHttpsRedirection();
+app.UseOutputCache();
 
 app.MapConnectivityEndpoints()
     .NewVersionedApi()

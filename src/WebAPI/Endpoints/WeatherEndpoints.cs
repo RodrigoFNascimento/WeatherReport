@@ -35,7 +35,8 @@ internal static class WeatherEndpoints
         .WithName("GetWeatherForecast")
         .WithSummary("Gets the weather forecast.")
         .WithDescription("Gets the weather forecast.")
-        .MapToApiVersion(1);
+        .MapToApiVersion(1)
+        .CacheOutput();
 
         return builder;
     }
