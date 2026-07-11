@@ -30,19 +30,23 @@ internal static class WeatherEndpoints
                     summaries[Random.Shared.Next(summaries.Length)]
                 ))
                 .ToArray();
-            return forecast;
+
+            return new GetWeatherForecastResponse(forecast);
         })
         .WithName("GetWeatherForecast")
         .WithSummary("Gets the weather forecast.")
         .WithDescription("Gets the weather forecast.")
         .MapToApiVersion(1)
+        .Produces<GetWeatherForecastResponse>()
         .CacheOutput();
 
         return builder;
     }
 }
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+public sealed record GetWeatherForecastResponse(IEnumerable<WeatherForecast> Forecasts) { }
+
+public sealed record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
