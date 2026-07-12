@@ -4,3 +4,8 @@ GET {{WebAPI_HostAddress}}/v1/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{WebAPI_HostAddress}}/ping/
+Accept: application/json
+
+###
