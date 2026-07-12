@@ -1,7 +1,8 @@
 using Infrastructure;
 using WeatherReport.ServiceDefaults;
 using WebAPI;
-using WebAPI.Endpoints;
+using WebAPI.Features.Connectivity;
+using WebAPI.Features.WeatherForecast;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +20,7 @@ app.UseHttpsRedirection();
 app.UseOutputCache();
 
 app.MapConnectivityEndpoints()
-    .NewVersionedApi()
-    .ReportApiVersions()
-    .MapWeatherEndpoints();
+    .MapWeatherForecastEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
