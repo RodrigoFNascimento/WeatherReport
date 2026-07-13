@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 
 namespace Application.UseCases.WeatherForecast.GetWeatherForecast;
 
 internal sealed class GetWeatherForecastHandler
-    : IRequestHandler<GetWeatherForecastRequest, GetWeatherForecastResponse>
+    : IRequestHandler<GetWeatherForecastRequest, Result<GetWeatherForecastResponse>>
 {
-    public Task<GetWeatherForecastResponse> Handle(
+    public Task<Result<GetWeatherForecastResponse>> Handle(
         GetWeatherForecastRequest request,
         CancellationToken cancellationToken)
     {
@@ -23,6 +24,8 @@ internal sealed class GetWeatherForecastHandler
             ))
             .ToArray();
 
-        return Task.FromResult(new GetWeatherForecastResponse(forecast));
+        return Task.FromResult(
+            Result.Ok(
+                new GetWeatherForecastResponse(forecast)));
     }
 }

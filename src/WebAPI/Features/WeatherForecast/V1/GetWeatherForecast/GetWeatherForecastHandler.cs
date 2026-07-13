@@ -13,7 +13,10 @@ internal static class GetWeatherForecastHandler
     {
         var result = await sender.Send(new GetWeatherForecastRequest());
 
-        var forecasts = result.Forecasts
+        if (result.IsFailed)
+            return Results.InternalServerError();
+
+        var forecasts = result.Value.Forecasts
             .Select(f => new WeatherForecast(f.Date, f.TemperatureC, f.TemperatureF, f.Summary));
 
         return Results.Ok(new GetWeatherForecastResponse(forecasts));
