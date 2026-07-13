@@ -1,4 +1,7 @@
-﻿namespace WebAPI.Features.WeatherForecast.V1.GetWeatherForecast;
+﻿using Application.UseCases.WeatherForecast.GetWeatherForecast;
+using MediatR;
+
+namespace WebAPI.Features.WeatherForecast.V1.GetWeatherForecast;
 
 internal static class GetWeatherForecastHandler
 {
@@ -6,22 +9,13 @@ internal static class GetWeatherForecastHandler
     /// Handles the logic for the endpoint that gets the weather forecast.
     /// </summary>
     /// <returns>The endpoint result.</returns>
-    public static IResult Handle()
+    public static async Task<IResult> Handle(ISender sender)
     {
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        var result = await sender.Send(new GetWeatherForecastRequest());
 
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast
-            (
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            ))
-            .ToArray();
+        var forecasts = result.Forecasts
+            .Select(f => new WeatherForecast(f.Date, f.TemperatureC, f.TemperatureF, f.Summary));
 
-        return Results.Ok(new GetWeatherForecastResponse(forecast) { Forecasts = forecast });
+        return Results.Ok(new GetWeatherForecastResponse(forecasts));
     }
 }

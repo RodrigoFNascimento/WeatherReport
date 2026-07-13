@@ -1,3 +1,4 @@
+using Application;
 using Infrastructure;
 using WeatherReport.ServiceDefaults;
 using WebAPI;
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder.Services
+    .AddApplication()
     .AddInfrastructure(builder, builder.Configuration)
     .AddWebApi();
 
