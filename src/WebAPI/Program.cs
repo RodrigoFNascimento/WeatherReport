@@ -24,7 +24,6 @@ app.UseOutputCache();
 app.MapConnectivityEndpoints()
     .MapWeatherForecastEndpoints();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.MapOpenApi();
