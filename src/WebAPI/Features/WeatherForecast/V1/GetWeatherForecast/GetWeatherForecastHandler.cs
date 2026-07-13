@@ -1,4 +1,5 @@
 ﻿using Application.UseCases.WeatherForecast.GetWeatherForecast;
+using FluentResults.HttpMapping.Execution;
 using MediatR;
 
 namespace WebAPI.Features.WeatherForecast.V1.GetWeatherForecast;
@@ -9,16 +10,15 @@ internal static class GetWeatherForecastHandler
     /// Handles the logic for the endpoint that gets the weather forecast.
     /// </summary>
     /// <returns>The endpoint result.</returns>
-    public static async Task<IResult> Handle(ISender sender)
+    public static async Task<IResult> Handle(ISender sender, IHttpResultMapper httpResultMapper)
     {
         var result = await sender.Send(new GetWeatherForecastRequest());
 
-        if (result.IsFailed)
-            return Results.InternalServerError();
+        var presentationResponse = result.Map(
+            x => new GetWeatherForecastResponse(
+                x.Forecasts.Select(
+                    f => new WeatherForecast(f.Date, f.TemperatureC, f.TemperatureF, f.Summary))));
 
-        var forecasts = result.Value.Forecasts
-            .Select(f => new WeatherForecast(f.Date, f.TemperatureC, f.TemperatureF, f.Summary));
-
-        return Results.Ok(new GetWeatherForecastResponse(forecasts));
+        return httpResultMapper.Map(presentationResponse);
     }
 }

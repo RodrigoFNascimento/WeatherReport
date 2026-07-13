@@ -1,5 +1,9 @@
 ﻿using Asp.Versioning;
+using FluentResults;
+using FluentResults.HttpMapping;
 using Microsoft.OpenApi;
+using System.Net;
+using System.Net.Mime;
 
 namespace WebAPI;
 
@@ -19,7 +23,8 @@ internal static partial class Program
             {
                 context.ProblemDetails.Extensions.Remove("exception");
             };
-        });
+        })
+        .AddResultMapping();
 
     private static IServiceCollection AddDocumentation(
         this IServiceCollection services)
@@ -53,4 +58,19 @@ internal static partial class Program
 
         return services;
     }
+
+    private static IServiceCollection AddResultMapping(this IServiceCollection services) =>
+        services.AddHttpResultMapping(mapper =>
+        {
+            mapper
+                .WhenFailure()
+                .Problem(p => p
+                    .WithStatus(HttpStatusCode.InternalServerError)
+                    .WithTitle("Unexpected internal error.")
+                    .WithDetail("An unexpected internal error occurred. Try again later."));
+
+            mapper
+                .When(ctx => ctx.Result is Result<Stream>)
+                .Map(ctx => Results.File((ctx.Result as Result<Stream>)!.Value, MediaTypeNames.Application.Pdf));
+        });
 }
