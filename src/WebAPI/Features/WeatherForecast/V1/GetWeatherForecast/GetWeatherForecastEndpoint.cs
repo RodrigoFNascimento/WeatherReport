@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using WebAPI.Extensions;
 
 namespace WebAPI.Features.WeatherForecast.V1.GetWeatherForecast;
 
@@ -16,6 +17,7 @@ internal sealed class GetWeatherForecastEndpoint : IEndpointDefinition
             .WithDescription("Gets the weather forecast.")
             .Produces<GetWeatherForecastResponse>()
             .ProducesProblem(StatusCodes.Status500InternalServerError, MediaTypeNames.Application.Json)
+            .EnrichLogs()
             .CacheOutput();
     }
 }

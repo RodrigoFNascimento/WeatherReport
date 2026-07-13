@@ -17,6 +17,7 @@ internal static partial class Program
     public static IServiceCollection AddWebApi(this IServiceCollection services) =>
         services
         .AddDocumentation()
+        .AddHttpContextAccessor()
         .AddProblemDetails(options =>
         {
             options.CustomizeProblemDetails = context =>
