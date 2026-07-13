@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Behavior;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
@@ -14,7 +15,8 @@ public static class DependencyInjection
     {
         services.AddMediatR(config =>
         {
-            config.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection));
+            config.RegisterServicesFromAssemblyContaining(typeof(DependencyInjection))
+                .AddOpenBehavior(typeof(ExceptionHandlingBehavior<,>));
         });
 
         return services;
