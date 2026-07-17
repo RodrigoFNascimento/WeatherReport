@@ -1,4 +1,5 @@
-﻿using FluentResults;
+﻿using Application.Services.SpanEnricher;
+using FluentResults;
 using MediatR;
 
 namespace Application.Behavior;
@@ -13,6 +14,11 @@ internal sealed class ExceptionHandlingBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
     where TResponse : ResultBase, new()
 {
+    private readonly ISpanEnricher _spanEnricher;
+
+    public ExceptionHandlingBehavior(ISpanEnricher spanEnricher) =>
+        _spanEnricher = spanEnricher;
+
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
@@ -24,6 +30,8 @@ internal sealed class ExceptionHandlingBehavior<TRequest, TResponse>
         }
         catch (Exception ex)
         {
+            _spanEnricher.EnrichWithException(ex);
+
             var result = new TResponse();
             result.Reasons.Add(new Error(ex.Message).CausedBy(ex));
             return result;

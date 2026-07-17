@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.OutputCaching.StackExchangeRedis;
+﻿using Application.Services.SpanEnricher;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.OutputCaching.StackExchangeRedis;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,6 +65,8 @@ public static class DependencyInjection
     {
         services.AddOpenTelemetry()
             .WithTracing(tracing => tracing.AddRedisInstrumentation());
+
+        services.AddSingleton<ISpanEnricher, SpanEnricher>();
 
         return services;
     }
