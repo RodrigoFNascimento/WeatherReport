@@ -49,18 +49,16 @@ internal sealed class OpenMeteoApiRepository : IWeatherForecastRepository
 
             if (content is null)
             {
-                return Result.Fail(
-                    new Error("Could not parse the response body.")
-                        .WithMetadata("StatusCode", response.StatusCode)
-                        .WithMetadata("ResponseContent", await response.Content.ReadAsStringAsync(cancellationToken)));
+                return new Error("Could not parse the response body.")
+                    .WithMetadata("StatusCode", response.StatusCode)
+                    .WithMetadata("ResponseContent", await response.Content.ReadAsStringAsync(cancellationToken));
             }
 
             return Result.Ok(content);
         }
 
-        return Result.Fail(
-            new Error("Could not retrieve the daily forecast.")
-                .WithMetadata("StatusCode", response.StatusCode)
-                .WithMetadata("ResponseContent", await response.Content.ReadAsStringAsync(cancellationToken)));
+        return new Error("Could not retrieve the daily forecast.")
+            .WithMetadata("StatusCode", response.StatusCode)
+            .WithMetadata("ResponseContent", await response.Content.ReadAsStringAsync(cancellationToken));
     }
 }
