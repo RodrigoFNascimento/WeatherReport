@@ -25,31 +25,16 @@ internal sealed class GetWeatherForecastHandler
         if (rawData.IsFailed)
             return rawData.ToResult();
 
-        var forecasts = new List<WeatherForecast>();
+        var forecasts = new List<Domain.WeatherForecast>();
 
         for (int i = 0; i < rawData.Value.Daily.Time.Length; i++)
         {
             var date = DateOnly.Parse(rawData.Value.Daily.Time[i]);
-            var tempC = (int)Math.Round(rawData.Value.Daily.Temperature_2m_Max[i]);
-            var summary = MapTemperatureToSummary(tempC);
+            var tempC = rawData.Value.Daily.Temperature_2m_Max[i];
 
-            forecasts.Add(new WeatherForecast(date, tempC, summary));
+            forecasts.Add(new Domain.WeatherForecast(date, tempC));
         }
 
         return Result.Ok(new GetWeatherForecastResponse(forecasts));
     }
-
-    private static string MapTemperatureToSummary(int tempC) => tempC switch
-    {
-        < -10 => "Freezing",
-        >= -10 and < 0 => "Bracing",
-        >= 0 and < 10 => "Chilly",
-        >= 10 and < 15 => "Cool",
-        >= 15 and < 20 => "Mild",
-        >= 20 and < 25 => "Warm",
-        >= 25 and < 30 => "Balmy",
-        >= 30 and < 35 => "Hot",
-        >= 35 and < 40 => "Sweltering",
-        _ => "Scorching"
-    };
 }
