@@ -1,10 +1,15 @@
-﻿using Application.Services.SpanEnricher;
+﻿using Application.Repositories.WeatherForecast;
+using Application.Services.SpanEnricher;
+using Infrastructure.HealthChecks;
+using Infrastructure.Repositories;
 using Infrastructure.Services;
+using Infrastructure.Settings.ExternalServices;
 using Microsoft.AspNetCore.OutputCaching.StackExchangeRedis;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using OpenTelemetry.Trace;
 using StackExchange.Redis;
 using System.Net.Security;
@@ -15,6 +20,8 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
+    private const string ReadyHealthCheckTag = "ready";
+
     /// <summary>
     /// Add infrastructure dependencies.
     /// </summary>
@@ -25,9 +32,15 @@ public static class DependencyInjection
         IHostApplicationBuilder hostApplicationBuilder,
         IConfiguration configuration)
     {
-        return services
+        services
             .AddCache(hostApplicationBuilder, configuration)
             .AddTelemetry();
+
+        services.AddOpenMeteoApi(
+            configuration,
+            hostApplicationBuilder.Services.AddHealthChecks());
+
+        return services;
     }
 
     private static IServiceCollection AddCache(
@@ -110,5 +123,29 @@ public static class DependencyInjection
         {
             return certificate?.Subject != null;
         };
+    }
+
+    private static IServiceCollection AddOpenMeteoApi(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHealthChecksBuilder healthChecksBuilder)
+    {
+        services.Configure<OpenMeteoApiSettings>(
+            configuration.GetRequiredSection(OpenMeteoApiSettings.SectionName));
+
+        services
+            .AddHttpClient<IWeatherForecastRepository, OpenMeteoApiRepository>((serviceProvider, httpClient) =>
+            {
+                var settings = serviceProvider.GetRequiredService<IOptions<OpenMeteoApiSettings>>().Value;
+
+                httpClient.BaseAddress = new(settings.Url);
+                httpClient.Timeout = settings.Timeout;
+            });
+
+        healthChecksBuilder.AddCheck<OpenMeteoApiHealthCheck>(
+            OpenMeteoApiSettings.SectionName,
+            tags: [ReadyHealthCheckTag]);
+
+        return services;
     }
 }

@@ -14,7 +14,7 @@ internal static class GetWeatherForecastHandler
     /// <returns>The endpoint result.</returns>
     public static async Task<IResult> Handle(ISender sender, IHttpResultMapper httpResultMapper)
     {
-        var result = await sender.Send(new GetWeatherForecastRequest());
+        var result = await sender.Send(new GetWeatherForecastRequest(52.52, 13.41, 5));
 
         var presentationResponse = result.Map(
             x => new GetWeatherForecastResponse(
