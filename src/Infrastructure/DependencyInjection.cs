@@ -11,7 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using OpenTelemetry.Trace;
+using Polly;
 using StackExchange.Redis;
+using System.Net;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -140,7 +142,37 @@ public static class DependencyInjection
 
                 httpClient.BaseAddress = new(settings.Url);
                 httpClient.Timeout = settings.Timeout;
-            });
+            })
+            .AddResilienceHandler(
+                "Open-Meteo-Standard-Pipeline",
+                static (builder, context) =>
+                {
+                    context.EnableReloads<OpenMeteoApiSettings>();
+
+                    var apiSettings = context.GetOptions<OpenMeteoApiSettings>();
+
+                    apiSettings.StandardRetry.Retry.ShouldHandle = static args =>
+                        ValueTask.FromResult(args is
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
+                        } or
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
+                        });
+
+                    builder.AddRetry(apiSettings.StandardRetry.Retry);
+
+                    apiSettings.StandardRetry.CircuitBreaker.ShouldHandle = static args =>
+                        ValueTask.FromResult(args is
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
+                        } or
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
+                        });
+
+                    builder.AddCircuitBreaker(apiSettings.StandardRetry.CircuitBreaker);
+                });
 
         healthChecksBuilder.AddCheck<OpenMeteoApiHealthCheck>(
             OpenMeteoApiSettings.SectionName,

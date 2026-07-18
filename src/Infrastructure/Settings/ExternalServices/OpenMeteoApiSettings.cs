@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Settings.ExternalServices;
+﻿using Microsoft.Extensions.Http.Resilience;
+
+namespace Infrastructure.Settings.ExternalServices;
 
 internal sealed class OpenMeteoApiSettings
 {
@@ -7,4 +9,5 @@ internal sealed class OpenMeteoApiSettings
 
     public required string Url { get; init; }
     public required TimeSpan Timeout { get; init; }
+    public required HttpStandardResilienceOptions StandardRetry { get; set; }
 }
