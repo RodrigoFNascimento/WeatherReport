@@ -27,18 +27,19 @@ internal sealed class LoggingBehavior<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var response = await next(cancellationToken);
+        var result = await next(cancellationToken);
 
-        if (response.IsSuccess)
-            return response;
+        if (result.IsSuccess)
+            return result;
 
-        var error = response.Errors[0];
+        var error = result.Errors[0];
 
         var message = error.Reasons.FirstOrDefault()?.Message ?? error.Message;
+        Dictionary<string, object?> state = [];
+        state["@result"] = result;
 
         if (error.Reasons.FirstOrDefault() is ExceptionalError exceptionalError)
         {
-            Dictionary<string, object?> state = [];
             var ex = exceptionalError.Exception;
             state["error.message"] = ex.Message;
             state["error.kind"] = ex.GetType().Name;
@@ -47,11 +48,12 @@ internal sealed class LoggingBehavior<TRequest, TResponse>
             using (_logger.BeginScope(state))
                 _logger.LogError(ex, "{ErrorMessage}", message);
 
-            return response;
+            return result;
         }
 
-        _logger.LogError("{ErrorMessage}", message);
+        using (_logger.BeginScope(state))
+            _logger.LogError("{ErrorMessage}", message);
 
-        return response;
+        return result;
     }
 }

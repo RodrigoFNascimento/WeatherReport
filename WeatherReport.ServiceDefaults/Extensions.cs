@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Serilog;
 
 namespace WeatherReport.ServiceDefaults;
 
@@ -23,6 +24,14 @@ public static class Extensions
         builder.ConfigureOpenTelemetry();
 
         builder.AddDefaultHealthChecks();
+
+        builder.Services.AddSerilog((services, loggerConfig) =>
+        {
+            loggerConfig.ReadFrom.Configuration(builder.Configuration);
+        },
+        writeToProviders: true);
+
+        Serilog.Debugging.SelfLog.Enable(Console.Error);
 
         builder.Services.AddServiceDiscovery();
 
