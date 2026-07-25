@@ -11,10 +11,10 @@ public sealed record WeatherForecast(
     DateOnly Date,
 
     [property: Description("Temperature in Celsius.")]
-    int TemperatureC,
+    double TemperatureC,
 
     [property: Description("Temperature in Fahrenheit.")]
-    int TemperatureF,
+    double TemperatureF,
 
     [property: Description("Weather forecast summary.")]
     string? Summary);
