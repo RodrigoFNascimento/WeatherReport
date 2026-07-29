@@ -1,5 +1,5 @@
 {
   "appHost": {
-    "path": "WeatherReport.AppHost/WeatherReport.AppHost.csproj"
+    "path": "src/WeatherReport.AppHost/WeatherReport.AppHost.csproj"
   }
 }
