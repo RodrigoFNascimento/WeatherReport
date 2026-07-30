@@ -1,5 +1,4 @@
-﻿using Application.Repositories.WeatherForecast.GetDailyForecast;
-using FluentResults;
+﻿using FluentResults;
 
 namespace Application.Repositories.WeatherForecast;
 
@@ -33,5 +32,9 @@ public interface IWeatherForecastRepository
     /// A <see cref="Result{T}"/> containing a <see cref="GetDailyForecastResponse"/> on success.
     /// On failure the <see cref="Result{T}"/> will be in a failed state and include error details (e.g., network errors, invalid parameters, provider errors).
     /// </returns>
-    Task<Result<GetDailyForecastResponse>> GetDailyForecastAsync(double latitude, double longitude, int forecastDays, CancellationToken cancellationToken);
+    Task<Result<IReadOnlyCollection<Domain.WeatherForecast>>> GetDailyForecastAsync(
+        double latitude,
+        double longitude,
+        int forecastDays,
+        CancellationToken cancellationToken);
 }

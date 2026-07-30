@@ -16,25 +16,15 @@ internal sealed class GetWeatherForecastHandler
         GetWeatherForecastRequest request,
         CancellationToken cancellationToken)
     {
-        var rawData = await _weatherForecastRepository.GetDailyForecastAsync(
+        var forecastResult = await _weatherForecastRepository.GetDailyForecastAsync(
             request.Latitude,
             request.Longitude,
             request.ForecastDays,
             cancellationToken);
 
-        if (rawData.IsFailed)
-            return rawData.ToResult();
+        if (forecastResult.IsFailed)
+            return forecastResult.ToResult();
 
-        var forecasts = new List<Domain.WeatherForecast>();
-
-        for (int i = 0; i < rawData.Value.Daily.Time.Length; i++)
-        {
-            var date = DateOnly.Parse(rawData.Value.Daily.Time[i]);
-            var tempC = rawData.Value.Daily.Temperature_2m_Max[i];
-
-            forecasts.Add(new Domain.WeatherForecast(date, tempC));
-        }
-
-        return Result.Ok(new GetWeatherForecastResponse(forecasts));
+        return Result.Ok(new GetWeatherForecastResponse(forecastResult.Value));
     }
 }
