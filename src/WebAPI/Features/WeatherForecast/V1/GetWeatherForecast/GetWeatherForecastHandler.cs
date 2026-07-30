@@ -21,8 +21,7 @@ internal static class GetWeatherForecastHandler
                 x.Forecasts.Select(
                     f => new WeatherForecast(
                         f.Date,
-                        f.Temperature.DegreesCelsius,
-                        f.Temperature.DegreesFahrenheit))));
+                        f.Temperature.DegreesCelsius))));
 
         return httpResultMapper.Map(presentationResponse);
     }

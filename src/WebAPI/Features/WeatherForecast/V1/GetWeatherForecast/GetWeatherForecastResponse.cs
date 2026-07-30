@@ -11,10 +11,7 @@ public sealed record WeatherForecast(
     DateOnly Date,
 
     [property: Description("Temperature in Celsius.")]
-    double TemperatureC,
-
-    [property: Description("Temperature in Fahrenheit.")]
-    double TemperatureF)
+    double TemperatureC)
 {
     [property: Description("A human-readable description of the weather.")]
     public string Summary => TemperatureC switch
@@ -30,4 +27,7 @@ public sealed record WeatherForecast(
         >= 35 and < 40 => "Sweltering",
         _ => "Scorching"
     };
+
+    [property: Description("Temperature in Fahrenheit.")]
+    public double TemperatureF => 32 + (TemperatureC / 0.5556);
 };

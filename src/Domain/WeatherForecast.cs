@@ -17,11 +17,6 @@ public readonly record struct Temperature
     /// </summary>
     public double DegreesCelsius { get; }
 
-    /// <summary>
-    /// The temperature in degrees Fahrenheit.
-    /// </summary>
-    public double DegreesFahrenheit => 32 + (DegreesCelsius / 0.5556);
-
     private Temperature(double degreesCelsius) => DegreesCelsius = degreesCelsius;
 
     /// <summary>
