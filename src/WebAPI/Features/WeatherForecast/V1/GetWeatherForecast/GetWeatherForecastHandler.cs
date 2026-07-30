@@ -19,7 +19,7 @@ internal static class GetWeatherForecastHandler
         var presentationResponse = result.Map(
             x => new GetWeatherForecastResponse(
                 x.Forecasts.Select(
-                    f => new WeatherForecast(f.Date, f.TemperatureC, f.TemperatureF, f.Summary))));
+                    f => new WeatherForecast(f.Date, f.TemperatureC, f.TemperatureF))));
 
         return httpResultMapper.Map(presentationResponse);
     }
