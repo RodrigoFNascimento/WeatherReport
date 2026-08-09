@@ -39,7 +39,6 @@ public static class DependencyInjection
             .AddTelemetry();
 
         services.AddOpenMeteoApi(
-            configuration,
             hostApplicationBuilder.Services.AddHealthChecks());
 
         return services;
@@ -129,11 +128,12 @@ public static class DependencyInjection
 
     private static IServiceCollection AddOpenMeteoApi(
         this IServiceCollection services,
-        IConfiguration configuration,
         IHealthChecksBuilder healthChecksBuilder)
     {
-        services.Configure<OpenMeteoApiSettings>(
-            configuration.GetRequiredSection(OpenMeteoApiSettings.SectionName));
+        services.AddOptions<OpenMeteoApiSettings>()
+            .BindConfiguration(OpenMeteoApiSettings.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         services
             .AddHttpClient<IWeatherForecastRepository, OpenMeteoApiRepository>((serviceProvider, httpClient) =>
