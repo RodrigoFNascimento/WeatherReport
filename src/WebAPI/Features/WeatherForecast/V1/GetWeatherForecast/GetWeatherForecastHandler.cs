@@ -12,9 +12,9 @@ internal static class GetWeatherForecastHandler
     /// <param name="sender">Sends a mediator request.</param>
     /// <param name="httpResultMapper">Maps a result to an HTTP response.</param>
     /// <returns>The endpoint result.</returns>
-    public static async Task<IResult> Handle(ISender sender, IHttpResultMapper httpResultMapper)
+    public static async Task<IResult> Handle(ISender sender, IHttpResultMapper httpResultMapper, CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new GetWeatherForecastRequest(52.52, 13.41, 5));
+        var result = await sender.Send(new GetWeatherForecastRequest(52.52, 13.41, 5), cancellationToken);
 
         var presentationResponse = result.Map(
             x => new GetWeatherForecastResponse(
