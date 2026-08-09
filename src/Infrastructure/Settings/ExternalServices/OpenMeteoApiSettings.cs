@@ -10,6 +10,5 @@ internal sealed class OpenMeteoApiSettings
 
     [Url]
     public required string Url { get; init; }
-    public required TimeSpan Timeout { get; init; }
     public required HttpStandardResilienceOptions StandardRetry { get; set; }
 }

@@ -141,7 +141,7 @@ public static class DependencyInjection
                 var settings = serviceProvider.GetRequiredService<IOptions<OpenMeteoApiSettings>>().Value;
 
                 httpClient.BaseAddress = new(settings.Url);
-                httpClient.Timeout = settings.Timeout;
+                httpClient.Timeout = Timeout.InfiniteTimeSpan;
             })
             .AddResilienceHandler(
                 "Open-Meteo-Standard-Pipeline",
@@ -150,6 +150,19 @@ public static class DependencyInjection
                     context.EnableReloads<OpenMeteoApiSettings>();
 
                     var apiSettings = context.GetOptions<OpenMeteoApiSettings>();
+
+                    builder.AddTimeout(apiSettings.StandardRetry.TotalRequestTimeout);
+
+                    apiSettings.StandardRetry.CircuitBreaker.ShouldHandle = static args =>
+                        ValueTask.FromResult(args is
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
+                        } or
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
+                        });
+
+                    builder.AddCircuitBreaker(apiSettings.StandardRetry.CircuitBreaker);
 
                     apiSettings.StandardRetry.Retry.ShouldHandle = static args =>
                         ValueTask.FromResult(args is
@@ -162,16 +175,7 @@ public static class DependencyInjection
 
                     builder.AddRetry(apiSettings.StandardRetry.Retry);
 
-                    apiSettings.StandardRetry.CircuitBreaker.ShouldHandle = static args =>
-                        ValueTask.FromResult(args is
-                        {
-                            Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
-                        } or
-                        {
-                            Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
-                        });
-
-                    builder.AddCircuitBreaker(apiSettings.StandardRetry.CircuitBreaker);
+                    builder.AddTimeout(apiSettings.StandardRetry.AttemptTimeout);
                 });
 
         healthChecksBuilder.AddCheck<OpenMeteoApiHealthCheck>(
