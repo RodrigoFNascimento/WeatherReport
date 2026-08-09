@@ -8,6 +8,7 @@
     <Project Path="src/WebAPI/WebAPI.csproj" />
   </Folder>
   <Folder Name="/test/">
+    <Project Path="test/WeatherReport.Tests.Architecture/WeatherReport.Tests.Architecture.csproj" Id="b7a37d1b-cc57-4fa6-8568-d3835d47c854" />
     <Project Path="test/WebAPI.Tests.Integration/WebAPI.Tests.Integration.csproj" Id="da274a8b-5069-42fb-a8ff-5d00f045f539" />
   </Folder>
 </Solution>
