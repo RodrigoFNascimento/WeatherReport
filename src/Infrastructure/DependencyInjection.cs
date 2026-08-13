@@ -155,23 +155,23 @@ public static class DependencyInjection
 
                     apiSettings.StandardRetry.CircuitBreaker.ShouldHandle = static args =>
                         ValueTask.FromResult(args is
-                    {
-                        Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
-                    } or
-                    {
-                        Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
-                    });
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
+                        } or
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
+                        });
 
                     builder.AddCircuitBreaker(apiSettings.StandardRetry.CircuitBreaker);
 
                     apiSettings.StandardRetry.Retry.ShouldHandle = static args =>
                         ValueTask.FromResult(args is
-                    {
-                        Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
-                    } or
-                    {
-                        Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
-                    });
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.InternalServerError
+                        } or
+                        {
+                            Outcome.Result.StatusCode: HttpStatusCode.GatewayTimeout
+                        });
 
                     builder.AddRetry(apiSettings.StandardRetry.Retry);
 
