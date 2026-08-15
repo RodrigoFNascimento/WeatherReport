@@ -2,15 +2,20 @@
 using System.Net;
 using WebAPI.Tests.Integration.Fixtures;
 
-namespace WebAPI.Tests.Integration;
+namespace WebAPI.Tests.Integration.WeatherForecast;
 
-public sealed class WeatherForecastTests : IAsyncLifetime
+/// <summary>
+/// Integration tests for successful weather forecast retrieval.
+/// </summary>
+[Collection("Weather Forecast Tests")]
+public sealed class WeatherForecastSuccessTests : IAsyncLifetime
 {
-    private readonly OpenMeteoFixture _openMeteoMock = new();
+    private OpenMeteoFixture? _openMeteoMock;
     private Aspire.Hosting.DistributedApplication? _app;
 
     public async ValueTask InitializeAsync()
     {
+        _openMeteoMock = new OpenMeteoFixture();
         await _openMeteoMock.InitializeAsync();
         _openMeteoMock.SetupHealthCheckMock();
         _openMeteoMock.SetupDailyForecastMock(
@@ -27,7 +32,8 @@ public sealed class WeatherForecastTests : IAsyncLifetime
         if (_app != null)
             await _app.DisposeAsync();
 
-        await _openMeteoMock.DisposeAsync();
+        if (_openMeteoMock != null)
+            await _openMeteoMock.DisposeAsync();
     }
 
     [Fact]
@@ -36,7 +42,7 @@ public sealed class WeatherForecastTests : IAsyncLifetime
         // Arrange
         var cancellationToken = CancellationToken.None;
 
-        Environment.SetEnvironmentVariable("ExternalServices__OpenMeteo__Url", _openMeteoMock.BaseUrl);
+        Environment.SetEnvironmentVariable("ExternalServices__OpenMeteo__Url", _openMeteoMock!.BaseUrl);
 
         try
         {

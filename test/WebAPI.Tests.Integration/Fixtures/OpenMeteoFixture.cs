@@ -78,13 +78,47 @@ public sealed class OpenMeteoFixture : IAsyncLifetime
             .WithParam("longitude", longitude.ToString())
             .WithParam("daily", "temperature_2m_max")
             .WithParam("forecast_days", forecastDays.ToString())
-            .WithParam("timezone", "auto");
+            .WithParam("timezone", "auto")
+            .UsingGet();
 
         var response = Response
             .Create()
             .WithStatusCode(HttpStatusCode.OK)
             .WithHeader("Content-Type", "application/json")
             .WithBody(JsonSerializer.Serialize(responseBody));
+
+        _server?.Given(request)
+            .RespondWith(response);
+    }
+
+    /// <summary>
+    /// Sets up a mock error response for the daily weather forecast endpoint.
+    /// </summary>
+    /// <param name="statusCode">The HTTP status code to return.</param>
+    /// <param name="errorBody">Optional error response body.</param>
+    public void SetupDailyForecastErrorMock(
+        HttpStatusCode statusCode,
+        string? errorBody = null)
+    {
+        var request = Request
+            .Create()
+            .WithPath("/v1/forecast")
+            .WithParam("latitude", "52.52")
+            .WithParam("longitude", "13.41")
+            .WithParam("daily", "temperature_2m_max")
+            .WithParam("forecast_days", "5")
+            .WithParam("timezone", "auto")
+            .UsingGet();
+
+        var response = Response
+            .Create()
+            .WithStatusCode(statusCode);
+
+        if (!string.IsNullOrEmpty(errorBody))
+        {
+            response.WithHeader("Content-Type", "application/json")
+                .WithBody(errorBody);
+        }
 
         _server?.Given(request)
             .RespondWith(response);
@@ -108,7 +142,8 @@ public sealed class OpenMeteoFixture : IAsyncLifetime
             .WithPath("/v1/forecast")
             .WithParam("latitude", "52.52")
             .WithParam("longitude", "13.41")
-            .WithParam("hourly", "temperature_2m");
+            .WithParam("hourly", "temperature_2m")
+            .UsingGet();
 
         var response = Response
             .Create()
@@ -118,5 +153,13 @@ public sealed class OpenMeteoFixture : IAsyncLifetime
 
         _server?.Given(request)
             .RespondWith(response);
+    }
+
+    /// <summary>
+    /// Resets all mock mappings, clearing any previously configured mocks.
+    /// </summary>
+    public void ResetMocks()
+    {
+        _server?.ResetMappings();
     }
 }
