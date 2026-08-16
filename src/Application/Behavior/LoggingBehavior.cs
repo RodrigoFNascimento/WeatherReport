@@ -36,6 +36,7 @@ internal sealed class LoggingBehavior<TRequest, TResponse>
 
         var message = error.Reasons.FirstOrDefault()?.Message ?? error.Message;
         Dictionary<string, object?> state = [];
+        state["@request"] = request;
         state["@result"] = result;
 
         if (error.Reasons.FirstOrDefault() is ExceptionalError exceptionalError)
