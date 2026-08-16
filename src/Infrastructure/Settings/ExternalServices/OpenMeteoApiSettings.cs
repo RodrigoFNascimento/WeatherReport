@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Infrastructure.Settings.ExternalServices;
 
-internal sealed class OpenMeteoApiSettings
+internal sealed record OpenMeteoApiSettings
 {
     public const string ResourceName = "Open Meteo API";
     public const string SectionName = "ExternalServices:OpenMeteo";
