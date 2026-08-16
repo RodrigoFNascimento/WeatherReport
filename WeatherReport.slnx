@@ -9,6 +9,7 @@
   </Folder>
   <Folder Name="/test/">
     <Project Path="test/Application.Tests.Unit/Application.Tests.Unit.csproj" Id="0dbfddad-15e3-490d-9c0f-e4978784e950" />
+    <Project Path="test/Domain/Domain.Tests.Unit.csproj" Id="c6ce5f49-0afb-4d23-a620-b005a3dadd66" />
     <Project Path="test/WeatherReport.Tests.Architecture/WeatherReport.Tests.Architecture.csproj" Id="b7a37d1b-cc57-4fa6-8568-d3835d47c854" />
     <Project Path="test/WebAPI.Tests.Integration/WebAPI.Tests.Integration.csproj" Id="da274a8b-5069-42fb-a8ff-5d00f045f539" />
   </Folder>
