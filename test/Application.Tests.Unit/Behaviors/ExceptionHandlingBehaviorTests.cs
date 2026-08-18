@@ -9,15 +9,15 @@ namespace Application.Tests.Unit.Behaviors;
 
 public sealed class ExceptionHandlingBehaviorTests
 {
-    private readonly ISpanEnricher _telemetryService;
+    private readonly ISpanEnricher _spanEnricher;
     private readonly RequestHandlerDelegate<Result> _next;
     private readonly ExceptionHandlingBehavior<ExceptionHandlingTestRequest, Result> _sut;
 
     public ExceptionHandlingBehaviorTests()
     {
-        _telemetryService = Substitute.For<ISpanEnricher>();
+        _spanEnricher = Substitute.For<ISpanEnricher>();
         _next = Substitute.For<RequestHandlerDelegate<Result>>();
-        _sut = new(_telemetryService);
+        _sut = new(_spanEnricher);
     }
 
     [Fact]
