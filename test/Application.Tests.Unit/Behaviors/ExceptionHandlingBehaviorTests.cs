@@ -47,6 +47,7 @@ public sealed class ExceptionHandlingBehaviorTests
 
         // Assert
         Assert.Equivalent(expected, result);
+        _spanEnricher.Received(1).EnrichWithException(exception);
     }
 
     public sealed record ExceptionHandlingTestRequest(string ID = "") : IRequest<Result>;

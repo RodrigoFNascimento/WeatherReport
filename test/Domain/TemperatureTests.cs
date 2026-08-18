@@ -22,8 +22,14 @@ public sealed class TemperatureTests
         // Arrange
         const double MinimumCelsiusTemperature = -273.15;
         var celsiusDegrees = MinimumCelsiusTemperature - 0.01;
+        const string ExpectedParameterName = "value";
+
+        // Act
+        void act() => Temperature.FromCelsius(celsiusDegrees);
 
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => Temperature.FromCelsius(celsiusDegrees));
+        ArgumentOutOfRangeException exception = Assert.Throws<ArgumentOutOfRangeException>(act);
+        Assert.Equal($"Temperature below absolute zero. (Parameter '{ExpectedParameterName}')", exception.Message);
+        Assert.Equal(ExpectedParameterName, exception.ParamName);
     }
 }

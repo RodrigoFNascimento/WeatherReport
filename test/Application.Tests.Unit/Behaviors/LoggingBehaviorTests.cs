@@ -41,9 +41,10 @@ public sealed class LoggingBehaviorTests
     public async Task Handle_WhenResultHasExceptionalError_ShouldEnrichLogWithExceptionData()
     {
         // Arrange
+        const string ErrorMessage = "An unexpected error occurred.";
         var request = new LoggingTestRequest();
-        var exception = new Exception();
-        var response = Result.Fail(new Error(string.Empty).CausedBy(exception));
+        var exception = new Exception(ErrorMessage);
+        var response = Result.Fail(new Error(ErrorMessage).CausedBy(exception));
 
         _next(CancellationToken.None).Returns(response);
 
@@ -62,6 +63,13 @@ public sealed class LoggingBehaviorTests
 
         Assert.Contains("error.stack", properties.Keys);
         Assert.Equivalent(exception.StackTrace, properties["error.stack"]);
+
+        Assert.Contains(
+            _logger.ReceivedCalls(),
+            x => x.GetMethodInfo().Name == LogMethodName
+                && (LogLevel)x.GetArguments()[0]! == LogLevel.Error
+                && (Exception)x.GetArguments()[3]! == exception
+                && x.GetArguments()[2]!.ToString() == ErrorMessage);
     }
 
     [Fact]
