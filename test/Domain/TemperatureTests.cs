@@ -7,7 +7,7 @@ public sealed class TemperatureTests
     {
         // Arrange
         const double MinimumCelsiusTemperature = -273.15;
-        var celsiusDegrees = MinimumCelsiusTemperature + 0.01;
+        var celsiusDegrees = MinimumCelsiusTemperature;
 
         // Act
         var result = Temperature.FromCelsius(celsiusDegrees);
