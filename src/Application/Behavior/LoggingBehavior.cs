@@ -34,7 +34,7 @@ internal sealed class LoggingBehavior<TRequest, TResponse>
 
         var error = result.Errors[0];
 
-        var message = error.Reasons.FirstOrDefault()?.Message ?? error.Message;
+        var message = error.Message;
         Dictionary<string, object?> state = [];
         state["@request"] = request;
         state["@result"] = result;
