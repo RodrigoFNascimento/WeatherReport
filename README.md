@@ -131,4 +131,4 @@ Interactive documentation is available at `/swagger` when running in development
 
 ## License
 
-This project is released under the [MIT](LICENSE.txt) license. You are free to use, copy, modify, distribute, or do anything else you wish with this code, with no restrictions whatsoever.
+This project is released under the [MIT](LICENSE.txt) license.
