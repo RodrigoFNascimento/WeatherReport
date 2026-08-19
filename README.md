@@ -120,6 +120,13 @@ dotnet test test/WebAPI.Tests.Integration/WebAPI.Tests.Integration.csproj
 dotnet test test/WeatherReport.Tests.Architecture/WeatherReport.Tests.Architecture.csproj
 ```
 
+Run mutation tests:
+
+```bash
+# Navigate to the target unit test project directory and execute:
+dotnet stryker
+```
+
 ## API Endpoints
 
 | Method | Route | Description |
