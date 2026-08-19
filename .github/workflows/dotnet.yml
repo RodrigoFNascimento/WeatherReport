@@ -29,3 +29,11 @@ jobs:
       continue-on-error: true
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Restore .NET tools
+      run: dotnet tool restore
+    - name: Mutation tests (Domain)
+      run: dotnet stryker
+      working-directory: test/Domain.Tests.Unit
+    - name: Mutation tests (Application)
+      run: dotnet stryker
+      working-directory: test/Application.Tests.Unit
