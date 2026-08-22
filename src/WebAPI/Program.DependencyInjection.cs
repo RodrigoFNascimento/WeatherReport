@@ -65,6 +65,9 @@ internal static partial class Program
         {
             mapper
                 .WhenFailure()
+                .WithHeader("cache-control", new StringValues(["no-cache", "no-store"]))
+                .WithHeader("expires", "-1")
+                .WithHeader("pragma", "no-cache")
                 .Problem(p => p
                     .WithStatus(HttpStatusCode.InternalServerError)
                     .WithTitle("Unexpected internal error.")
