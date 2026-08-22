@@ -131,8 +131,10 @@ dotnet stryker
 
 | Method | Route | Description |
 |---|---|---|
-| `GET` | `/api/v1/weather-forecast` | Returns a weather forecast |
+| `GET` | `/alive` | Liveness check endpoint |
+| `GET` | `/health` | Health check endpoint |
 | `GET` | `/ping` | Connectivity check |
+| `GET` | `/api/v1/weather-forecast` | Returns a weather forecast |
 
 Interactive documentation is available at `/swagger` when running in development mode.
 
