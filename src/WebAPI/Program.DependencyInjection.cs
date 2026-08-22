@@ -1,9 +1,11 @@
 ﻿using Asp.Versioning;
 using FluentResults;
 using FluentResults.HttpMapping;
+using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi;
 using System.Net;
 using System.Net.Mime;
+using WebAPI.Handlers;
 
 namespace WebAPI;
 
@@ -16,16 +18,17 @@ internal static partial class Program
     /// <returns>The configured instance of <see cref="IServiceCollection"/> for further configuration.</returns>
     public static IServiceCollection AddWebApi(this IServiceCollection services) =>
         services
-        .AddDocumentation()
-        .AddHttpContextAccessor()
-        .AddProblemDetails(options =>
-        {
-            options.CustomizeProblemDetails = context =>
+            .AddDocumentation()
+            .AddExceptionHandler<GlobalExceptionHandler>()
+            .AddHttpContextAccessor()
+            .AddProblemDetails(options =>
             {
-                context.ProblemDetails.Extensions.Remove("exception");
-            };
-        })
-        .AddResultMapping();
+                options.CustomizeProblemDetails = context =>
+                {
+                    context.ProblemDetails.Extensions.Remove("exception");
+                };
+            })
+            .AddResultMapping();
 
     private static IServiceCollection AddDocumentation(
         this IServiceCollection services)

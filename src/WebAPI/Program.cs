@@ -16,11 +16,11 @@ builder.Services
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
-
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseOutputCache();
 
+app.MapDefaultEndpoints();
 app.MapConnectivityEndpoints()
     .MapWeatherForecastEndpoints();
 
