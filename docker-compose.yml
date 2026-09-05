@@ -1,0 +1,34 @@
+services:
+  webapi:
+    build:
+      context: .
+      dockerfile: src/WebAPI/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Staging}
+      OTEL_SERVICE_NAME: weather-report-api
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+    depends_on:
+      otel-collector:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.123.0
+    command:
+      - --config=/etc/otelcol-contrib/config.yaml
+    environment:
+      DD_API_KEY: ${DD_API_KEY:?DD_API_KEY is required}
+      DD_OTLP_ENDPOINT: ${DD_OTLP_ENDPOINT:-https://otlp.datadoghq.com}
+    volumes:
+      - ./deploy/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    expose:
+      - "4317"
+      - "4318"
+      - "13133"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:13133/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

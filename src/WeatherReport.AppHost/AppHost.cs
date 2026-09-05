@@ -12,7 +12,8 @@ if (useLocalRedis)
         .WithRedisInsight();
 
     builder.AddProject<Projects.WebAPI>("webapi")
-        .WithReference(redisReference);
+        .WithReference(redisReference)
+        .WithEnvironment("OTEL_SERVICE_NAME", "weather-report-api");
 }
 else
 {
@@ -22,7 +23,8 @@ else
         .WithHttpEndpoint(port: 55400, targetPort: 55400, name: "http");
 
     builder.AddProject<Projects.WebAPI>("webapi")
-        .WithReference(remoteRedis);
+        .WithReference(remoteRedis)
+        .WithEnvironment("OTEL_SERVICE_NAME", "weather-report-api");
 }
 
 builder.Build().Run();

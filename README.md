@@ -88,7 +88,34 @@ dotnet run --project src/WeatherReport.AppHost/WeatherReport.AppHost.csproj
 
 The Aspire dashboard will be available at the URL printed in the console output, and provides real-time logs, traces, and metrics for all services.
 
-To use an existing Redis instance instead of a local container, set the connection string before running:
+### Staging and production telemetry
+
+Local development should continue to use the Aspire AppHost.
+For staging and production, `docker-compose.yml` runs the Web API with an OpenTelemetry Collector sidecar instead.
+The API sends OTLP telemetry to the collector, and the collector forwards traces, metrics, and logs to Datadog through the generic OTLP/HTTP exporter.
+
+Set the Datadog API key before starting the stack. Configure the remote Redis connection string in the settings file for the selected environment:
+
+```bash
+$env:DD_API_KEY = "your-datadog-api-key"
+docker compose up --build
+```
+
+Use `src/WebAPI/appsettings.Staging.json` for staging and `src/WebAPI/appsettings.Production.json` for production.
+Replace the empty `ConnectionStrings:RedisConnection` value in the appropriate file before deployment.
+These files also configure the Serilog OTLP endpoint to use the collector at `http://otel-collector:4317`.
+`ASPNETCORE_ENVIRONMENT` defaults to `Staging` and can be set to `Production` for production deployments.
+
+The default Datadog OTLP endpoint is `https://otlp.datadoghq.com`.
+Override `DD_OTLP_ENDPOINT` when using another Datadog site or an intermediate endpoint.
+
+The collector configuration is in `deploy/otel-collector.yaml`.
+It accepts OTLP over gRPC on port `4317` and HTTP on port `4318`,
+then exports all three signal types using `otlphttp/datadog`.
+The Datadog API key is read from `DD_API_KEY` at runtime and is not stored in the repository.
+The collector's health endpoint is available only inside the Compose network on port `13133`.
+
+To use an existing Redis instance with Aspire locally, set the connection string in:
 
 ```json
 // src/WeatherReport.AppHost/appsettings.Development.json
