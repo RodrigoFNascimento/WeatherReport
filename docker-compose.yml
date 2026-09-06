@@ -10,7 +10,7 @@ services:
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
     depends_on:
       otel-collector:
-        condition: service_healthy
+        condition: service_started
     ports:
       - "8080:8080"
 
