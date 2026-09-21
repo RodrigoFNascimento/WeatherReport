@@ -26,10 +26,10 @@ public sealed class LoggingBehaviorTests
         // Arrange
         var response = Result.Ok();
 
-        _next(CancellationToken.None).Returns(response);
+        _next(TestContext.Current.CancellationToken).Returns(response);
 
         // Act
-        var result = await _sut.Handle(new(), _next, CancellationToken.None);
+        var result = await _sut.Handle(new(), _next, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equivalent(response, result);
@@ -46,13 +46,13 @@ public sealed class LoggingBehaviorTests
         var exception = new Exception(ErrorMessage);
         var response = Result.Fail(new Error(ErrorMessage).CausedBy(exception));
 
-        _next(CancellationToken.None).Returns(response);
+        _next(TestContext.Current.CancellationToken).Returns(response);
 
         Dictionary<string, object?> properties = [];
         _logger.BeginScope(Arg.Do<Dictionary<string, object?>>(x => properties = x));
 
         // Act
-        await _sut.Handle(request, _next, CancellationToken.None);
+        await _sut.Handle(request, _next, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Contains("error.message", properties.Keys);
@@ -80,13 +80,13 @@ public sealed class LoggingBehaviorTests
         var errorMessage = "Error message";
         var response = Result.Fail(new Error(errorMessage));
 
-        _next(CancellationToken.None).Returns(response);
+        _next(TestContext.Current.CancellationToken).Returns(response);
 
         Dictionary<string, object?> properties = [];
         _logger.BeginScope(Arg.Do<Dictionary<string, object?>>(x => properties = x));
 
         // Act
-        var result = await _sut.Handle(request, _next, CancellationToken.None);
+        var result = await _sut.Handle(request, _next, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equivalent(response, result);

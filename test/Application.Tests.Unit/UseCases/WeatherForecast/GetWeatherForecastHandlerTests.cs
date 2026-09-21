@@ -39,7 +39,7 @@ public sealed class GetWeatherForecastHandlerTests
             .Returns(Result.Ok<IReadOnlyCollection<Domain.WeatherForecast>>(expectedForecasts));
 
         // Act
-        var result = await _sut.Handle(request, CancellationToken.None);
+        var result = await _sut.Handle(request, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.True(result.IsSuccess);
